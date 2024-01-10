@@ -160,11 +160,13 @@ void LibImgViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
         bg.addRoundedRect(pixmapRect, 4, 4);
         painter->setClipPath(bg);
     }
-
     QPainterPath bp1;
     bp1.addRoundedRect(pixmapRect, 4, 4);
     painter->setClipPath(bp1);
-    painter->drawImage(pixmapRect, _pixmap);
+    _pixmap=_pixmap.scaled(pixmapRect.size(),Qt::KeepAspectRatioByExpanding,Qt::SmoothTransformation);
+    qreal adjustx=_pixmap.width()-pixmapRect.width();
+         qreal adjusty=_pixmap.height()-pixmapRect.height();
+        painter->drawImage(pixmapRect,_pixmap,_pixmap.rect().adjusted(adjustx*1/2,-adjusty/2,-adjustx*1/2,adjusty*1/2));
 
     painter->restore();
 }
