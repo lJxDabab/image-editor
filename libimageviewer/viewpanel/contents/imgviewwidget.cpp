@@ -31,6 +31,9 @@
 DWIDGET_USE_NAMESPACE
 
 //const int Distance_factor = 4;//距离因子
+#define LEFT_LISTVIEW_MOVE_MAXLEN 60
+#define RIGHT_LISTVIEW_MOVE_UPDATE 35
+
 
 MyImageListWidget::MyImageListWidget(QWidget *parent)
     : QWidget(parent)
@@ -123,14 +126,17 @@ bool MyImageListWidget::eventFilter(QObject *obj, QEvent *e)
             m_movePoints.pop_front();
             m_movePoints.push_back(p);
         }
-        m_listview->move(m_listview->x() + p.x() - m_moveViewPoint.x(), m_listview->y());
+        int moveRangeX=m_listview->x() + p.x() - m_moveViewPoint.x();
+        int rowWidth = m_listview->getRowWidth();
+        int offsetRowMove=rowWidth-((rowWidth/RIGHT_LISTVIEW_MOVE_UPDATE)>18?18:rowWidth/RIGHT_LISTVIEW_MOVE_UPDATE-3)*RIGHT_LISTVIEW_MOVE_UPDATE;
+        moveRangeX=moveRangeX>LEFT_LISTVIEW_MOVE_MAXLEN?LEFT_LISTVIEW_MOVE_MAXLEN:moveRangeX;
+        moveRangeX=moveRangeX<(LEFT_LISTVIEW_MOVE_MAXLEN-offsetRowMove)?(LEFT_LISTVIEW_MOVE_MAXLEN-offsetRowMove):moveRangeX;
+        m_listview->move(moveRangeX, m_listview->y());
         m_moveViewPoint = p;
-
         //目的为了获取moveX的值,中心离当前位置的差值
         int moveX = 0;
         int middle = (this->geometry().right() - this->geometry().left()) / 2 ;
         int itemX = m_listview->x() + m_listview->getCurrentItemX() + 31;
-        int rowWidth = m_listview->getRowWidth();
         if (rowWidth - m_listview->getCurrentItemX() < (this->geometry().width() / 2)) {
             moveX = this->geometry().width() - rowWidth - m_listview->x() ;
         } else if (m_listview->getCurrentItemX() < (this->geometry().width() / 2)) {
@@ -315,7 +321,6 @@ void MyImageListWidget::animationStart(bool isReset, int endPos, int duration)
     if (m_resetAnimation->state() == QPropertyAnimation::State::Running) {
         m_resetAnimation->stop();
     }
-
     //目的为了获取moveX的值,中心离当前位置的差值
     int moveX = 0;
     int middle = (this->geometry().right() - this->geometry().left()) / 2 ;
@@ -342,7 +347,11 @@ void MyImageListWidget::animationStart(bool isReset, int endPos, int duration)
     }
     m_resetAnimation->setEasingCurve(QEasingCurve::OutQuad);
     m_resetAnimation->setStartValue(m_listview->pos());
-    m_resetAnimation->setEndValue(QPoint(m_listview->pos().x() + moveX, m_listview->pos().y()));
+    int moveRangeX=m_listview->pos().x() + moveX;
+    int offsetRowMove=rowWidth-((rowWidth/RIGHT_LISTVIEW_MOVE_UPDATE)>18?18:rowWidth/RIGHT_LISTVIEW_MOVE_UPDATE-3)*RIGHT_LISTVIEW_MOVE_UPDATE;
+    moveRangeX=moveRangeX>LEFT_LISTVIEW_MOVE_MAXLEN?LEFT_LISTVIEW_MOVE_MAXLEN:moveRangeX;
+    moveRangeX=moveRangeX<(LEFT_LISTVIEW_MOVE_MAXLEN-offsetRowMove)?(LEFT_LISTVIEW_MOVE_MAXLEN-offsetRowMove):moveRangeX;
+    m_resetAnimation->setEndValue(QPoint(moveRangeX, m_listview->pos().y()));
     m_resetAnimation->start();
 
 }
