@@ -7,7 +7,7 @@
 #include "unionimage/imageutils.h"
 
 #include "accessibility/ac-desktop-define.h"
-
+#include <DGuiApplicationHelper>
 #include <DMessageBox>
 #include <DLabel>
 #include <DFontSizeManager>
@@ -81,6 +81,7 @@ RenameDialog::RenameDialog(const QString &filename, QWidget *parent)
 //    m_vlayout->setStretch(3, 1);
     widet->setLayout(m_vlayout);
 //    onThemeChanged(dApp->viewerTheme->getCurrentTheme());
+    onThemeChanged(DGuiApplicationHelper::instance()->themeType());
     InitDlg();
     m_lineedt->lineEdit()->setFocus();
     int Dirlen = /*m_DirPath.size() +*/ 1 + m_labformat->text().size();
@@ -97,7 +98,6 @@ RenameDialog::RenameDialog(const QString &filename, QWidget *parent)
     connect(cancelbtn, &DPushButton::clicked, this, [ = ] {
         reject();
     });
-
     connect(m_lineedt, &DLineEdit::textChanged, this, [ = ](const QString & arg) {
         setCurrentTip();
         int len = arg.toLocal8Bit().length();
@@ -228,6 +228,17 @@ void RenameDialog::slotsFocusChanged(bool onFocus)
     if (!onFocus) {
         m_lineedt->hideAlertMessage();
     }
+}
+void RenameDialog::onThemeChanged(DGuiApplicationHelper::ColorType theme){
+      QPalette palette;
+      QColor color;
+    if (theme == DGuiApplicationHelper::ColorType::DarkType) {
+        color=QColor(179,179,179);
+    } else {
+         color=QColor(77,77,77);
+    }
+    palette.setColor(QPalette::WindowText,color);
+    m_labformat->setPalette(palette);
 }
 
 void RenameDialog::slotsUpdate()
