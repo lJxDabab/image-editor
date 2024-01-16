@@ -126,11 +126,11 @@ bool MyImageListWidget::eventFilter(QObject *obj, QEvent *e)
             m_movePoints.pop_front();
             m_movePoints.push_back(p);
         }
-        int moveRangeX=m_listview->x() + p.x() - m_moveViewPoint.x();
+        int moveRangeX = m_listview->x() + p.x() - m_moveViewPoint.x();
         int rowWidth = m_listview->getRowWidth();
-        int offsetRowMove=rowWidth-((rowWidth/RIGHT_LISTVIEW_MOVE_UPDATE)>18?18:rowWidth/RIGHT_LISTVIEW_MOVE_UPDATE-3)*RIGHT_LISTVIEW_MOVE_UPDATE;
-        moveRangeX=moveRangeX>LEFT_LISTVIEW_MOVE_MAXLEN?LEFT_LISTVIEW_MOVE_MAXLEN:moveRangeX;
-        moveRangeX=moveRangeX<(LEFT_LISTVIEW_MOVE_MAXLEN-offsetRowMove)?(LEFT_LISTVIEW_MOVE_MAXLEN-offsetRowMove):moveRangeX;
+        int offsetRowMove = rowWidth - ((rowWidth / RIGHT_LISTVIEW_MOVE_UPDATE) > 14 ? 12 : (rowWidth / RIGHT_LISTVIEW_MOVE_UPDATE - 3)) * RIGHT_LISTVIEW_MOVE_UPDATE;
+        moveRangeX = moveRangeX > LEFT_LISTVIEW_MOVE_MAXLEN ? LEFT_LISTVIEW_MOVE_MAXLEN : moveRangeX;
+        moveRangeX = moveRangeX < (LEFT_LISTVIEW_MOVE_MAXLEN - offsetRowMove) ? (LEFT_LISTVIEW_MOVE_MAXLEN - offsetRowMove) : moveRangeX;
         m_listview->move(moveRangeX, m_listview->y());
         m_moveViewPoint = p;
         //目的为了获取moveX的值,中心离当前位置的差值
@@ -347,10 +347,10 @@ void MyImageListWidget::animationStart(bool isReset, int endPos, int duration)
     }
     m_resetAnimation->setEasingCurve(QEasingCurve::OutQuad);
     m_resetAnimation->setStartValue(m_listview->pos());
-    int moveRangeX=m_listview->pos().x() + moveX;
-    int offsetRowMove=rowWidth-((rowWidth/RIGHT_LISTVIEW_MOVE_UPDATE)>18?18:rowWidth/RIGHT_LISTVIEW_MOVE_UPDATE-3)*RIGHT_LISTVIEW_MOVE_UPDATE;
-    moveRangeX=moveRangeX>LEFT_LISTVIEW_MOVE_MAXLEN?LEFT_LISTVIEW_MOVE_MAXLEN:moveRangeX;
-    moveRangeX=moveRangeX<(LEFT_LISTVIEW_MOVE_MAXLEN-offsetRowMove)?(LEFT_LISTVIEW_MOVE_MAXLEN-offsetRowMove):moveRangeX;
+    int moveRangeX = m_listview->pos().x() + moveX;
+    int offsetRowMove = rowWidth - ((rowWidth / RIGHT_LISTVIEW_MOVE_UPDATE) >= 12 ? 9 : (rowWidth / RIGHT_LISTVIEW_MOVE_UPDATE - 3)) * RIGHT_LISTVIEW_MOVE_UPDATE;
+    moveRangeX = moveRangeX > LEFT_LISTVIEW_MOVE_MAXLEN ? LEFT_LISTVIEW_MOVE_MAXLEN : moveRangeX;
+    moveRangeX = moveRangeX < (LEFT_LISTVIEW_MOVE_MAXLEN - offsetRowMove) ? (LEFT_LISTVIEW_MOVE_MAXLEN - offsetRowMove) : moveRangeX;
     m_resetAnimation->setEndValue(QPoint(moveRangeX, m_listview->pos().y()));
     m_resetAnimation->start();
 
