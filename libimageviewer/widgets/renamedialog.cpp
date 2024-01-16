@@ -37,8 +37,8 @@ RenameDialog::RenameDialog(const QString &filename, QWidget *parent)
     m_edtlayout = new QHBoxLayout();
     m_lineedt = new DLineEdit(widet);
     QFrame *line = new QFrame(widet);
-    line->setLineWidth(2);
-    line->setFixedHeight(25);// 垂直分割线短于按钮高度
+    line->setLineWidth(1);
+    line->setFixedHeight(25);  // 垂直分割线短于按钮高度
     QLbtoDLabel *labtitle = new QLbtoDLabel();
     okbtn = new DSuggestButton(tr("Confirm"), widet);
     cancelbtn = new DPushButton(tr("Cancel"), widet);
